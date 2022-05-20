@@ -87,7 +87,7 @@ public distinct class JCoFunctionTemplate {
     # The function that maps to the `getImportParameterList` method of `com.sap.conn.jco.JCoFunctionTemplate`.
     #
     # + return - The `JCoListMetaData` value returning from the Java mapping.
-    public function getImportParameterList() returns JCoListMetaData {
+    public isolated function getImportParameterList() returns JCoListMetaData {
         handle externalObj = com_sap_conn_jco_JCoFunctionTemplate_getImportParameterList(self.jObj);
         JCoListMetaData newObj = new (externalObj);
         return newObj;
@@ -163,7 +163,7 @@ function com_sap_conn_jco_JCoFunctionTemplate_getFunctionInterface(handle receiv
     paramTypes: []
 } external;
 
-function com_sap_conn_jco_JCoFunctionTemplate_getImportParameterList(handle receiver) returns handle = @java:Method {
+isolated function com_sap_conn_jco_JCoFunctionTemplate_getImportParameterList(handle receiver) returns handle = @java:Method {
     name: "getImportParameterList",
     'class: "com.sap.conn.jco.JCoFunctionTemplate",
     paramTypes: []

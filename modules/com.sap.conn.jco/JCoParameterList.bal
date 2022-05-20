@@ -306,7 +306,7 @@ public distinct class JCoParameterList {
     # The function that maps to the `getFieldCount` method of `com.sap.conn.jco.JCoParameterList`.
     #
     # + return - The `int` value returning from the Java mapping.
-    public function getFieldCount() returns int {
+    public isolated function getFieldCount() returns int {
         return com_sap_conn_jco_JCoParameterList_getFieldCount(self.jObj);
     }
 
@@ -354,7 +354,7 @@ public distinct class JCoParameterList {
     # The function that maps to the `getListMetaData` method of `com.sap.conn.jco.JCoParameterList`.
     #
     # + return - The `JCoListMetaData` value returning from the Java mapping.
-    public function getListMetaData() returns JCoListMetaData {
+    public isolated function getListMetaData() returns JCoListMetaData {
         handle externalObj = com_sap_conn_jco_JCoParameterList_getListMetaData(self.jObj);
         JCoListMetaData newObj = new (externalObj);
         return newObj;
@@ -692,7 +692,7 @@ public distinct class JCoParameterList {
     #
     # + arg0 - The `string` value required to map with the Java method parameter.
     # + arg1 - The `float` value required to map with the Java method parameter.
-    public function setValue23(string arg0, float arg1) {
+    public isolated function setValue23(string arg0, float arg1) {
         com_sap_conn_jco_JCoParameterList_setValue23(self.jObj, java:fromString(arg0), arg1);
     }
 
@@ -708,7 +708,7 @@ public distinct class JCoParameterList {
     #
     # + arg0 - The `string` value required to map with the Java method parameter.
     # + arg1 - The `int` value required to map with the Java method parameter.
-    public function setValue25(string arg0, int arg1) {
+    public isolated function setValue25(string arg0, int arg1) {
         com_sap_conn_jco_JCoParameterList_setValue25(self.jObj, java:fromString(arg0), arg1);
     }
 
@@ -1100,7 +1100,7 @@ function com_sap_conn_jco_JCoParameterList_getField2(handle receiver, handle arg
     paramTypes: ["java.lang.String"]
 } external;
 
-function com_sap_conn_jco_JCoParameterList_getFieldCount(handle receiver) returns int = @java:Method {
+isolated function com_sap_conn_jco_JCoParameterList_getFieldCount(handle receiver) returns int = @java:Method {
     name: "getFieldCount",
     'class: "com.sap.conn.jco.JCoParameterList",
     paramTypes: []
@@ -1136,7 +1136,7 @@ function com_sap_conn_jco_JCoParameterList_getInt2(handle receiver, handle arg0)
     paramTypes: ["java.lang.String"]
 } external;
 
-function com_sap_conn_jco_JCoParameterList_getListMetaData(handle receiver) returns handle = @java:Method {
+isolated function com_sap_conn_jco_JCoParameterList_getListMetaData(handle receiver) returns handle = @java:Method {
     name: "getListMetaData",
     'class: "com.sap.conn.jco.JCoParameterList",
     paramTypes: []
@@ -1370,7 +1370,7 @@ function com_sap_conn_jco_JCoParameterList_setValue22(handle receiver, handle ar
     paramTypes: ["java.lang.String", "[C", "int", "int"]
 } external;
 
-function com_sap_conn_jco_JCoParameterList_setValue23(handle receiver, handle arg0, float arg1) = @java:Method {
+isolated function com_sap_conn_jco_JCoParameterList_setValue23(handle receiver, handle arg0, float arg1) = @java:Method {
     name: "setValue",
     'class: "com.sap.conn.jco.JCoParameterList",
     paramTypes: ["java.lang.String", "double"]
@@ -1382,7 +1382,7 @@ function com_sap_conn_jco_JCoParameterList_setValue24(handle receiver, handle ar
     paramTypes: ["java.lang.String", "float"]
 } external;
 
-function com_sap_conn_jco_JCoParameterList_setValue25(handle receiver, handle arg0, int arg1) = @java:Method {
+isolated function com_sap_conn_jco_JCoParameterList_setValue25(handle receiver, handle arg0, int arg1) = @java:Method {
     name: "setValue",
     'class: "com.sap.conn.jco.JCoParameterList",
     paramTypes: ["java.lang.String", "int"]

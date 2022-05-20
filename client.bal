@@ -20,6 +20,12 @@ public isolated client class SAPClient {
         }
          
     }
+
+    remote function excuteBAPI(string name, ImportParameterList importMetaData) returns ExportParameterList|error? {
+        lock{
+            return executeRF(name, self.destination, importMetaData.cloneReadOnly() );
+        }
+    }
 }
 
 

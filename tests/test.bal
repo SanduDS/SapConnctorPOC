@@ -20,3 +20,17 @@ function testGetBAPIMetaData() {
         io:println(result);
     }
 }
+
+@test:Config {enable: true}
+function testExcuteBAPIMeta() {
+    map<string> importParms = {"REQUTEXT": "HI"};
+    ImportParameterList parms = {
+        importPMstringMap: importParms
+    };
+    ExportParameterList|error? result = sapClient->excuteBAPI("STFC_CONNECTION", parms);
+    if result is error {
+        test:assertFail(result.toString());
+    } else {
+        io:println("\n"+result.toString());
+    }
+}

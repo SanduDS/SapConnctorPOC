@@ -117,7 +117,7 @@ public distinct class JCoListMetaData {
     #
     # + arg0 - The `int` value required to map with the Java method parameter.
     # + return - The `string` value returning from the Java mapping.
-    public function getClassNameOfField(int arg0) returns string? {
+    public isolated function getClassNameOfField(int arg0) returns string? {
         return java:toString(com_sap_conn_jco_JCoListMetaData_getClassNameOfField(self.jObj, arg0));
     }
 
@@ -223,7 +223,7 @@ public distinct class JCoListMetaData {
     # The function that maps to the `getName` method of `com.sap.conn.jco.JCoListMetaData`.
     #
     # + return - The `string` value returning from the Java mapping.
-    public function getName() returns string? {
+    public isolated  function getName() returns string? {
         return java:toString(com_sap_conn_jco_JCoListMetaData_getName(self.jObj));
     }
 
@@ -231,7 +231,7 @@ public distinct class JCoListMetaData {
     #
     # + arg0 - The `int` value required to map with the Java method parameter.
     # + return - The `string` value returning from the Java mapping.
-    public function getName2(int arg0) returns string? {
+    public isolated  function getName2(int arg0) returns string? {
         return java:toString(com_sap_conn_jco_JCoListMetaData_getName2(self.jObj, arg0));
     }
 
@@ -823,7 +823,7 @@ function com_sap_conn_jco_JCoListMetaData_getClassMetaData2(handle receiver, han
     paramTypes: ["java.lang.String"]
 } external;
 
-function com_sap_conn_jco_JCoListMetaData_getClassNameOfField(handle receiver, int arg0) returns handle = @java:Method {
+isolated function com_sap_conn_jco_JCoListMetaData_getClassNameOfField(handle receiver, int arg0) returns handle = @java:Method {
     name: "getClassNameOfField",
     'class: "com.sap.conn.jco.JCoListMetaData",
     paramTypes: ["int"]
@@ -901,13 +901,13 @@ function com_sap_conn_jco_JCoListMetaData_getLength2(handle receiver, handle arg
     paramTypes: ["java.lang.String"]
 } external;
 
-function com_sap_conn_jco_JCoListMetaData_getName(handle receiver) returns handle = @java:Method {
+isolated function com_sap_conn_jco_JCoListMetaData_getName(handle receiver) returns handle = @java:Method {
     name: "getName",
     'class: "com.sap.conn.jco.JCoListMetaData",
     paramTypes: []
 } external;
 
-function com_sap_conn_jco_JCoListMetaData_getName2(handle receiver, int arg0) returns handle = @java:Method {
+isolated function com_sap_conn_jco_JCoListMetaData_getName2(handle receiver, int arg0) returns handle = @java:Method {
     name: "getName",
     'class: "com.sap.conn.jco.JCoListMetaData",
     paramTypes: ["int"]

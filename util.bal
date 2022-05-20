@@ -1,21 +1,7 @@
 import ballerina/io;
 import POC_T1.com.sap.conn.jco as jco;
 
-// public function mainTest() {
-//     var x = getBAPIMetadata("test");
-//     // if x is error  {
-//     //     io:println(x.toString());
-
-//     // }
-//     if x is jco:JCoException {
-//         io:println(x.toString());
-//     }
-
-// }
-
 public isolated function checkConnection(jco:JCoDestination destination) returns error? {
-
-    //jco:JCoDestination destination = check jco:JCoDestinationManager_getDestination("ABAP_AS1");
     io:println("STFC_CONNECTION started");
     jco:JCoRepository repository = check destination.getRepository();
     jco:JCoFunction sapFunction = check repository.getFunction("STFC_CONNECTION");
@@ -25,7 +11,6 @@ public isolated function checkConnection(jco:JCoDestination destination) returns
         return response;
     }
     io:println("STFC_CONNECTION finished:");
-    //io:println(" Echo: " + sapFunction.getExportParameterList().getString2("ECHOTEXT").toString());
     string? echo = sapFunction.getExportParameterList().getString2("ECHOTEXT");
     if (echo is string) {
         if echo == "Wso2" {
@@ -36,51 +21,100 @@ public isolated function checkConnection(jco:JCoDestination destination) returns
     } else {
         return error("Connection error");
     }
-    //io:println(" Response: " + sapFunction.getExportParameterList().getString2("RESPTEXT").toString());
 }
 
 public isolated function getBAPIMetadata(jco:JCoDestination destination, string functionName) returns readonly&FMMetaDta|error? {
     //jco:JCoDestination destination = check jco:JCoDestinationManager_getDestination("ABAP_AS1");
-
-    io:println("STFC_CONNECTION started");
     jco:JCoRepository repository = check destination.getRepository();
     jco:JCoFunctionTemplate sapFunction = check repository.getFunctionTemplate(functionName);
-
-    io:println("STFC_CONNECTION finished:");
     jco:JCoListMetaData metaDataList = sapFunction.getTableParameterList();
     FMMetaDta fmMetaDta = {};
-    TableField[] tables = [];
+    
     foreach int i in 0 ... metaDataList.getFieldCount() - 1 {
-
+        
         jco:JCoRecordMetaData mt = metaDataList.getRecordMetaData(i);
-
+        TableMetaData tableMetadata = {tableName: metaDataList.getName2(0).toString()};
         foreach int j in 0 ... mt.getFieldCount() - 1 {
-            io:println(mt.getName2(j));
-            io:println(mt.getClassNameOfField(j));
-            io:println(mt.getDescription(j));
             TableField tb = {columnName: mt.getName2(j).toString(), classNameOfField: mt.getClassNameOfField(j).toString(), 
                 description: mt.getDescription(j).toString()};
-            tables.push(tb);
+            tableMetadata.tableField.push(tb);
         }
+        fmMetaDta.tableMetaDataSet.push(tableMetadata);  
     }
-    fmMetaDta.tableMetaData = tables;
+
+    jco:JCoListMetaData metaDataList2 = sapFunction.getImportParameterList();
+    foreach int i in 0 ... metaDataList2.getFieldCount() - 1 {
+        ImportMetaData importMetaData = {
+            name: metaDataList2.getName2(i).toString(),
+            'type: metaDataList2.getClassNameOfField(i).toString()
+        };   
+        fmMetaDta.importMetaDataSet.push(importMetaData);  
+    }
     return fmMetaDta.cloneReadOnly();
 }
 
-public type FMMetaDta record {|
-    TableMetaData[] tableMetaData?;
+public isolated  function executeRF(string functionName, jco:JCoDestination destination, ImportParameterList importParams) returns readonly& ExportParameterList|error? {
+    jco:JCoRepository repository = check destination.getRepository();
+    jco:JCoFunction sapFunction = check repository.getFunction(functionName);
+    sapFunction = check setStringParameters(sapFunction, importParams);
+    //check setIntParameters(sapFunction, importParams.importPMIntMap);
+    //check setFloatParameters(sapFunction, importParams.importPMFloatMap);
+    _= check sapFunction.execute(destination);
+    return getStringParameters(sapFunction).cloneReadOnly();
+}
 
+isolated function getStringParameters(jco:JCoFunction sapFunction) returns ExportParameterList|error? {
+    jco:JCoParameterList paramList = sapFunction.getExportParameterList();
+    jco:JCoListMetaData mt = paramList.getListMetaData(); 
+    
+    map<string> stringSet = {};
+    foreach int i in 0 ... paramList.getFieldCount() - 1 {
+        
+        string? dataType = mt.getClassNameOfField(i);
+        if dataType !is () {
+            if dataType == "java.lang.String" {
+                string? key = mt.getName2(i);
+                string? value = paramList.getString2(key.toString());
+                stringSet[key.toString()] = value.toString();
+            }
+        }
+        ExportParameterList expList = {exportPMstringMap : stringSet};
+        return expList;
+    }
+}
+
+isolated function setStringParameters(jco:JCoFunction sapFunction, ImportParameterList parameterList) returns jco:JCoFunction|error {
+    foreach string key in parameterList.importPMstringMap.keys() {
+        io:println(key + "" + parameterList.importPMstringMap.get(key));
+        sapFunction.getImportParameterList().setValue32(key, parameterList.importPMstringMap.get(key));
+    }
+    return sapFunction;
+}
+
+isolated function setIntParameters(jco:JCoFunction sapFunction, map<int> parameterList) returns error? {
+    foreach string key in parameterList.keys() {
+        sapFunction.getImportParameterList().setValue25(key, parameterList.get(key));
+    }
+}
+
+isolated function setFloatParameters(jco:JCoFunction sapFunction, map<float> parameterList) returns error? {
+    foreach string key in parameterList.keys() {
+        sapFunction.getImportParameterList().setValue23(key, parameterList.get(key));
+    }
+}
+
+public type RFRequestParameters record {|
+    ImportParameterList importPMList;
 |};
 
-public type TableMetaData record {
-    string tableName?;
-    TableField[] tableField?;
-
+public type ImportParameterList record {
+    map<string> importPMstringMap;
+    //map<int> importPMIntMap;
+    //map<float> importPMFloatMap;
 };
 
-public type TableField record {
-    string columnName;
-    string classNameOfField;
-    string description;
+public type ExportParameterList record {
+    map<string> exportPMstringMap?;
+    map<int> exportPMDecimalMap?;
+    map<float> exportPMFloatMap?;
 };
-
